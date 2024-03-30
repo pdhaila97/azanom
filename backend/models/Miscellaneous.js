@@ -36,7 +36,28 @@ const contactUsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+const purchaseSchema = new mongoose.Schema({
+  nameOnCard: {
+    type: String,
+    required: true
+  },
+  cardNumber: {
+    type: String,
+    required: true
+  },
+  userId: {
+    type: String,
+    required: true
+  },
+  productId: {
+    type: String,
+    required: true
+  }
+},
+{ timestamps: true })
+
 const Feedback = mongoose.model('Feedback', feedbackSchema);
 const ContactUs = mongoose.model('ContactUs', contactUsSchema);
+const Purchase = mongoose.model('Purchase', purchaseSchema);
 
-module.exports = { Feedback, ContactUs };
+module.exports = { Feedback, ContactUs, Purchase };

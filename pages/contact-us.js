@@ -27,6 +27,9 @@ export default function ContactUsPage() {
       mobileNumber: data.get('mobileNumber')
     }).then(data => {
       data?.message && alert(data.message);
+      location.href = '/'
+    }).catch(error => {
+      error?.message && alert(error.message);
     });
 
   };

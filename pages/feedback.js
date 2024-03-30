@@ -27,6 +27,7 @@ export default function FeedbackPage() {
       comment: data.get('comment')
     }).then(data => {
       data?.message && alert(data.message);
+      location.href = '/'
     }).catch(error => {
       error?.message && alert(error.message);
     });
@@ -69,13 +70,7 @@ export default function FeedbackPage() {
               id="name"
               autoComplete="name"
             />
-            <TextareaAutosize
-              minRows={5}
-              placeholder="Please share your feedback"
-              name="comment"
-              style={{marginTop: '16px'}}
-              id="comment"
-            />
+            <textarea placeholder="Please share your feedback" name="comment" id="comment" style={{width: '100%', height: '200px'}} />
             <Button
               type="submit"
               fullWidth

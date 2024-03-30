@@ -8,7 +8,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { deleteUserInfo, getUserInfo } from "@/utils/helperMethods";
+import { getUserInfo } from "@/utils/helperMethods";
 import { get, isEmpty } from "lodash";
 import { useRouter } from "next/router";
 import BuyerDashboard from "@/components/buyerDashboard";

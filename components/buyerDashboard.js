@@ -19,6 +19,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Modal,
   Radio,
   RadioGroup,
 } from "@mui/material";
@@ -31,14 +32,22 @@ const defaultTheme = createTheme();
 export default function BuyerDashboard() {
   const [listings, setListings] = React.useState([]);
   const [purchases, setPurchases] = React.useState([]);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const selectedProductToBuy = React.useRef(null);
 
-  const onBuyProduct = (_id, event) => {
+  const onBuyProduct = (event) => {
     event.preventDefault();
+    const _id = selectedProductToBuy.current;
+    const data = new FormData(event.currentTarget);
+
     axiosCall(
       process.env.NEXT_PUBLIC_SERVER_URL + "/product/buy",
       "POST",
       {
         _id,
+        nameOnCard: data.get("nameOnCard"),
+        cardNumber: data.get("cardNumber"),
+        cvv: data.get("cvv"),
       },
       {},
       { sendToken: true }
@@ -47,6 +56,8 @@ export default function BuyerDashboard() {
         alert("Item bought and added to your purchases");
         setListings(res?.data?.products);
         setPurchases(res?.data?.purchases);
+        selectedProductToBuy.current = null;
+        setIsModalOpen(false);
       })
       .catch((error) => {
         error?.message && alert(error?.message);
@@ -81,13 +92,14 @@ export default function BuyerDashboard() {
         <Box
           sx={{
             marginTop: 8,
+            marginBottom: 9,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
           <Typography component="h1" variant="h5">
-            Buyer Dashboard
+            Buyer Dashboards
           </Typography>
           <Box sx={{ mt: 3 }}>
             <Grid container spacing={2}>
@@ -106,15 +118,17 @@ export default function BuyerDashboard() {
                         return (
                           <>
                             <ListItem
+                              key={listing._id}
                               secondaryAction={
                                 <>
                                   <IconButton
                                     title="Buy"
                                     edge="end"
-                                    onClick={onBuyProduct.bind(
-                                      this,
-                                      listing._id
-                                    )}
+                                    onClick={() => {
+                                      selectedProductToBuy.current =
+                                        listing._id;
+                                      setIsModalOpen(true);
+                                    }}
                                   >
                                     <LocalMallIcon />
                                   </IconButton>
@@ -152,7 +166,7 @@ export default function BuyerDashboard() {
                       {map(purchases, (purchase) => {
                         return (
                           <>
-                            <ListItem>
+                            <ListItem key={purchase._id}>
                               <ListItemAvatar>
                                 <Avatar>
                                   <Category />
@@ -175,6 +189,64 @@ export default function BuyerDashboard() {
             </Grid>
           </Box>
         </Box>
+        <Modal open={isModalOpen} onClose={setIsModalOpen.bind(this, false)}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
+            component="form"
+            onSubmit={onBuyProduct}
+            noValidate
+          >
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Your credit card details
+            </Typography>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="nameOnCard"
+              label="Name on card"
+              name="nameOnCard"
+              autoFocus
+              type="text"
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="cardNumber"
+              label="Card Number"
+              name="cardNumber"
+              type="number"
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="cvv"
+              label="CVV"
+              name="cvv"
+              type="password"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Buy
+            </Button>
+          </Box>
+        </Modal>
       </Container>
     </ThemeProvider>
   );

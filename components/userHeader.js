@@ -20,7 +20,6 @@ const UserHeaderAndFooter = (props) => {
 
   const onLogoutClick = () => {
     deleteUserInfo();
-    location.href = "/";
   };
 
   const onChangePasswordClick = () => {
@@ -87,27 +86,6 @@ const UserHeaderAndFooter = (props) => {
           />
         </BottomNavigation>
       </Paper>
-      {/* <Box sx={{}}>
-            <Typography
-              onClick={onContactUsClick}
-              style={{ cursor: "pointer" }}
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1 }}
-            >
-              Contact Us
-            </Typography>
-            <Typography
-              onClick={onFeedbackClick}
-              style={{ cursor: "pointer" }}
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1 }}
-            >
-              Feedback
-            </Typography>
-          </Toolbar>
-      </Box> */}
     </>
   );
 };

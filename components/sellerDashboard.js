@@ -30,15 +30,6 @@ export default function SellerDashboard() {
   const onAddListing = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    if (!data.get("price") || !data.get("title") || !data.get("category")) {
-      alert("Please enter all the parameters");
-      return;
-    }
-
-    if (isNaN(data.get("price")) || (Number(data.get("price")) > 999 || Number(data.get("price")) < 0)) {
-      alert("Invalid price! The value should range from CA$0 - CA$999");
-      return;
-    }
 
     axiosCall(
       process.env.NEXT_PUBLIC_SERVER_URL + "/product/add",
@@ -54,12 +45,10 @@ export default function SellerDashboard() {
       .then((res) => {
         alert("Item added and published for selling");
         setListings(res?.data);
+        setOpenModal(false);
       })
       .catch((error) => {
         error?.message && alert(error?.message);
-      })
-      .finally(() => {
-        setOpenModal(false);
       });
   };
 
@@ -114,6 +103,7 @@ export default function SellerDashboard() {
         <Box
           sx={{
             marginTop: 8,
+            marginBottom: 9,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

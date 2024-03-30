@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getUserInfo } from "./helperMethods";
+import { deleteUserInfo, getUserInfo } from "./helperMethods";
 import { get } from "lodash";
 
 export async function axiosCall(
@@ -23,6 +23,9 @@ export async function axiosCall(
     });
     return response.data;
   } catch (error) {
+    if(error?.response?.data?.message === 'jwt expired') {
+      deleteUserInfo();
+    }
     throw error?.response?.data; // Re-throw the error for further handling
   }
 }

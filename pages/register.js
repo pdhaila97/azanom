@@ -17,15 +17,21 @@ import { axiosCall } from "@/utils/apiMethods";
 import { getUserInfo } from "@/utils/helperMethods";
 import { isEmpty } from "lodash";
 import { useRouter } from "next/router";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
   const router = useRouter();
+  const [allowRegister, setAllowRegister] = React.useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    if(data.get('password') !== data.get('confirmPassword')) {
+      alert('Password and Confirm Password do not match');
+      return;
+    }
     axiosCall(process.env.NEXT_PUBLIC_SERVER_URL + '/auth/register', 'POST', {
       name: data.get('name'),
       email: data.get('email'),
@@ -135,9 +141,16 @@ export default function SignUp() {
                   </RadioGroup>
                 </FormControl>
               </Grid>
+              <ReCAPTCHA 
+                sitekey={process.env.NEXT_PUBLIC_GOOGLE_RECAPTCHA_SITE_KEY}
+                onChange={() => {
+                  setAllowRegister(true)
+                }}
+              />
             </Grid>
             <Button
               type="submit"
+              disabled={!allowRegister}
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}

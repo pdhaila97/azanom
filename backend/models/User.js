@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const { checkPasswordValidity } = require('../utils/helperMethods');
-
-const validUserTypes = ['buyer', 'seller']
+const { checkPasswordValidity, validUserTypes } = require('../utils/helperMethods');
 
 const userSchema = new mongoose.Schema(
   {

@@ -13,4 +13,5 @@ export function setUserInfo(userInfo) {
 
 export function deleteUserInfo() {
     localStorage.removeItem('userInfo');
+    location.href = "/";
 }
