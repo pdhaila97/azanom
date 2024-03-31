@@ -94,11 +94,34 @@ const getSanitizedParams = (obj, keys) => {
   return res;
 }
 
+const calculateRelativeTime = (timeInMilliseconds) => {
+  if (timeInMilliseconds < 0) {
+    throw new Error("Time cannot be negative");
+  }
+
+  // Convert milliseconds to seconds
+  const timeInSeconds = timeInMilliseconds / 1000;
+
+  const hours = Math.floor(timeInSeconds / 3600);
+  const minutes = Math.floor((timeInSeconds % 3600) / 60);
+  const seconds = Math.floor(timeInSeconds % 60);
+
+  if (hours > 0) {
+    return `${hours} hour${hours > 1 ? 's' : ''}`;
+  } else if (minutes > 0) {
+    return `${minutes} minute${minutes > 1 ? 's' : ''}`;
+  } else {
+    return `${seconds} second${seconds > 1 ? 's' : ''}`;
+  }
+}
+
+
 const validUserTypes = ['buyer', 'seller'];
 
 module.exports = {
   checkPasswordValidity,
   checkPasswordValidity2,
   getSanitizedParams,
+  calculateRelativeTime,
   validUserTypes
 };

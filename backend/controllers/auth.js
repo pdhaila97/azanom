@@ -5,13 +5,19 @@ const {
   checkPasswordValidity2,
   validUserTypes,
   getSanitizedParams,
+  calculateRelativeTime,
 } = require("../utils/helperMethods");
 const { isEmpty } = require("lodash");
 const Joi = require("joi");
 
 // Register a new user
 const register = async (req, res, next) => {
-  const { name, email, password, type } = getSanitizedParams(req.body, ['name', 'email', 'password', 'type']);
+  const { name, email, password, type } = getSanitizedParams(req.body, [
+    "name",
+    "email",
+    "password",
+    "type",
+  ]);
 
   try {
     const inputSchema = Joi.object({
@@ -42,7 +48,10 @@ const register = async (req, res, next) => {
 
 // Login with an existing user
 const login = async (req, res, next) => {
-  const { email, password } = getSanitizedParams(req.body, ['email', 'password']);
+  const { email, password } = getSanitizedParams(req.body, [
+    "email",
+    "password",
+  ]);
 
   try {
     const inputSchema = Joi.object({
@@ -64,10 +73,60 @@ const login = async (req, res, next) => {
       return res.status(404).json({ message: "Invalid Credentials" });
     }
 
+    const { rateLimit } = user;
+
+    if (rateLimit.blocked) {
+      const now = Date.now();
+
+      // Calculate the threshold timestamp for 24 hours ago in milliseconds
+      const threshold = now - 5 * 60 * 1000; // 5 hours in milliseconds
+
+      // Check if lastRequested is before the threshold
+      if (rateLimit.lastRequested < threshold) {
+        rateLimit.counter = 0;
+        rateLimit.lastRequested = null;
+        rateLimit.blocked = false;
+      } else {
+        throw new Error(
+          `You have tried logging in with invalid credentials for 3 times! Your account is locked, wait for another ${calculateRelativeTime(
+            rateLimit.lastRequested - threshold
+          )}`
+        );
+      }
+    }
+    ``;
     const passwordMatch = await user.comparePassword(password);
     if (!passwordMatch) {
+      if (!rateLimit.lastRequested) {
+        rateLimit.counter++;
+      } else {
+        const now = Date.now();
+        // repeat time set to 30 seconds
+        if (now - rateLimit.lastRequested < 30 * 1000) {
+          rateLimit.counter++;
+        } else {
+          rateLimit.counter = 0;
+        }
+      }
+      rateLimit.lastRequested = Date.now();
+
+      if (rateLimit.counter >= 3) {
+        rateLimit.blocked = true;
+
+        await user.save();
+        throw new Error(
+          `You have tried logging in with invalid credentials for 3 times! Your account is locked, wait for 5 minutes`
+        );
+      }
+
+      await user.save();
       return res.status(401).json({ message: "Invalid Credentials" });
+    } else {
+      rateLimit.counter = 0;
+      rateLimit.lastRequested = null;
     }
+
+    await user.save();
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: "1 hour",

@@ -23,6 +23,19 @@ const userSchema = new mongoose.Schema(
       default: 'buyer',
       required: true
     },
+    rateLimit: {
+      type: {
+        counter: Number,
+        lastRequested: Date,
+        blocked: Boolean
+      },
+      default: {
+        counter: 0,
+        lastRequested: null,
+        blocked: false
+      },
+      required: true
+    },
     listedProducts: [{
       type: String
     }],
