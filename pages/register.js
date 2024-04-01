@@ -146,6 +146,12 @@ export default function SignUp() {
                 onChange={() => {
                   setAllowRegister(true)
                 }}
+                onExpired={() => {
+                  setAllowRegister(false);
+                }}
+                style={{
+                  padding: '16px 0 0 16px'
+                }}
               />
             </Grid>
             <Button

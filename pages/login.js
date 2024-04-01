@@ -102,6 +102,12 @@ const LoginPage = () => {
                 onChange={() => {
                   setAllowLogin(true);
                 }}
+                onExpired={() => {
+                  setAllowLogin(false);
+                }}
+                style={{
+                  paddingTop: '16px'
+                }}
               />
               <Button
                 type="submit"
