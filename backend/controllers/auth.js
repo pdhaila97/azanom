@@ -78,8 +78,8 @@ const login = async (req, res, next) => {
     if (rateLimit.blocked) {
       const now = Date.now();
 
-      // Calculate the threshold timestamp for 24 hours ago in milliseconds
-      const threshold = now - 5 * 60 * 1000; // 5 hours in milliseconds
+      // Calculate the threshold timestamp for 2 hours ago in milliseconds
+      const threshold = now - 2 * 60 * 60 * 1000; // 2 hours in milliseconds
 
       // Check if lastRequested is before the threshold
       if (rateLimit.lastRequested < threshold) {
@@ -115,7 +115,7 @@ const login = async (req, res, next) => {
 
         await user.save();
         throw new Error(
-          `You have tried logging in with invalid credentials for 3 times! Your account is locked, wait for 5 minutes`
+          `You have tried logging in with invalid credentials for 3 times! Your account is locked, wait for 2 hours`
         );
       }
 
