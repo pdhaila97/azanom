@@ -3,9 +3,10 @@ const Product = require("../models/Product");
 const Joi = require("joi");
 const bcrypt = require('bcrypt');
 const { Purchase } = require("../models/Miscellaneous");
+const { getSanitizedParams } = require("../utils/helperMethods");
 
 const addNewProduct = async (req, res, next) => {
-  const { title, price, category } = req.body;
+  const { title, price, category } = getSanitizedParams(req.body, ['title', 'price', 'category']);
 
   try {
     const { user } = req;
@@ -25,7 +26,7 @@ const addNewProduct = async (req, res, next) => {
       title, price, category, type: user.type
     })
 
-    if (!isEmpty(error)) {
+    if (error) {
       throw error;
     }
 
@@ -43,7 +44,7 @@ const addNewProduct = async (req, res, next) => {
 };
 
 const deleteProduct = async (req, res, next) => {
-  const { _id } = req.body;
+  const { _id } = getSanitizedParams(req.body, ['_id']);
 
   try {
     const { user } = req;
@@ -64,7 +65,7 @@ const deleteProduct = async (req, res, next) => {
       _id, type: user.type, isSold: product.isSold
     })
 
-    if (!isEmpty(error)) {
+    if (error) {
       throw error;
     }
 
@@ -85,7 +86,7 @@ const deleteProduct = async (req, res, next) => {
 };
 
 const buyProduct = async (req, res, next) => {
-  const { _id, nameOnCard, cardNumber, cvv } = req.body;
+  const { _id, nameOnCard, cardNumber, cvv } = getSanitizedParams(req.body, ['_id', 'nameOnCard', 'cardNumber', 'cvv']);
 
   try {
     const { user } = req;

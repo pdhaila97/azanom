@@ -19,6 +19,7 @@ import {
 import { capitalize, filter, isEmpty, map } from "lodash";
 import { Delete, Category } from "@mui/icons-material";
 import { axiosCall } from "@/utils/apiMethods";
+import { stringAvatar } from "@/utils/helperMethods";
 
 const defaultTheme = createTheme();
 
@@ -58,7 +59,7 @@ export default function SellerDashboard() {
       process.env.NEXT_PUBLIC_SERVER_URL + "/product/delete",
       "POST",
       {
-        _id
+        _id,
       },
       {},
       { sendToken: true }
@@ -70,7 +71,7 @@ export default function SellerDashboard() {
       .catch((error) => {
         error?.message && alert(error?.message);
       });
-  }
+  };
 
   const toggleListingType = () => {
     setListingType((val) => (val === "current" ? "sold" : "current"));
@@ -113,47 +114,64 @@ export default function SellerDashboard() {
             Seller Dashboard
           </Typography>
           <Box sx={{ mt: 3 }}>
-            {!isEmpty(listings) && <Grid container spacing={2}>
-              <Grid container>
-                <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-                  Your {listingType === "current" ? "Current" : "Sold"} Listings
-                </Typography>
-                <List dense={true}>
-                  {map(
-                    filter(listings, (listing) =>
-                      listingType === "current" ? !listing.isSold : listing.isSold
-                    ),
-                    (listing) => {
-                      return (
-                        <>
-                          <ListItem
-                            secondaryAction={
-                              listingType === "current" && (
-                                <IconButton onClick={onDeleteProductListing.bind(this, listing._id)} edge="end" aria-label="delete">
-                                  <Delete />
-                                </IconButton>
-                              )
-                            }
-                          >
-                            <ListItemAvatar>
-                              <Avatar>
-                                <Category />
-                              </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                              primary={listing.title}
-                              secondary={`${capitalize(listing.category)} | CA$${
-                                listing.price
-                              }`}
-                            />
-                          </ListItem>
-                        </>
-                      );
-                    }
-                  )}
-                </List>
+            {!isEmpty(listings) && (
+              <Grid container spacing={2}>
+                <Grid
+                  style={{ alignItems: "center", flexDirection: "column" }}
+                  container
+                >
+                  <Typography
+                    sx={{ mt: 4, mb: 2 }}
+                    variant="h6"
+                    component="div"
+                  >
+                    Your {listingType === "current" ? "Current" : "Sold"}{" "}
+                    Listings
+                  </Typography>
+                  <List dense={true}>
+                    {map(
+                      filter(listings, (listing) =>
+                        listingType === "current"
+                          ? !listing.isSold
+                          : listing.isSold
+                      ),
+                      (listing) => {
+                        return (
+                          <>
+                            <ListItem
+                              secondaryAction={
+                                listingType === "current" && (
+                                  <IconButton
+                                    onClick={onDeleteProductListing.bind(
+                                      this,
+                                      listing._id
+                                    )}
+                                    edge="end"
+                                    aria-label="delete"
+                                  >
+                                    <Delete />
+                                  </IconButton>
+                                )
+                              }
+                            >
+                              <ListItemAvatar>
+                                <Avatar {...stringAvatar(listing.title)} />
+                              </ListItemAvatar>
+                              <ListItemText
+                                primary={listing.title}
+                                secondary={`${capitalize(
+                                  listing.category
+                                )} | CA$${listing.price}`}
+                              />
+                            </ListItem>
+                          </>
+                        );
+                      }
+                    )}
+                  </List>
+                </Grid>
               </Grid>
-            </Grid>}
+            )}
             <Button
               onClick={setOpenModal.bind(this, true)}
               fullWidth

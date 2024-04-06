@@ -34,7 +34,7 @@ const register = async (req, res, next) => {
       type,
     });
 
-    if (!isEmpty(error)) {
+    if (error) {
       throw error;
     }
 
@@ -139,7 +139,7 @@ const login = async (req, res, next) => {
 };
 
 const changePassword = async (req, res, next) => {
-  const { currentPassword, newPassword } = req.body;
+  const { currentPassword, newPassword } = getSanitizedParams(req.body, ['currentPassword', 'newPassword']);
 
   try {
     const { user } = req;
@@ -158,7 +158,7 @@ const changePassword = async (req, res, next) => {
       newPassword,
     });
 
-    if (!isEmpty(error)) {
+    if (error) {
       throw error;
     }
 

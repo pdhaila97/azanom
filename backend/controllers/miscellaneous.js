@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
 const { Feedback, ContactUs } = require("../models/Miscellaneous");
 const Joi = require("joi");
+const { getSanitizedParams } = require("../utils/helperMethods");
 
 const feedback = async (req, res, next) => {
-  const { email, name, comment } = req.body;
+  const { email, name, comment } = getSanitizedParams(req.body, ['email', 'name', 'comment']);
 
   try {
     const inputSchema = Joi.object({
@@ -32,7 +33,7 @@ const feedback = async (req, res, next) => {
 };
 
 const contactUs = async (req, res, next) => {
-  const { email, name, mobileNumber } = req.body;
+  const { email, name, mobileNumber } = getSanitizedParams(req.body, ['email', 'name', 'mobileNumber']);
 
   try {
     const inputSchema = Joi.object({

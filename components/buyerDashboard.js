@@ -26,6 +26,7 @@ import {
 import { capitalize, filter, isEmpty, map } from "lodash";
 import { Delete, Folder, Category } from "@mui/icons-material";
 import { axiosCall } from "@/utils/apiMethods";
+import { stringAvatar } from "@/utils/helperMethods";
 
 const defaultTheme = createTheme();
 
@@ -102,90 +103,87 @@ export default function BuyerDashboard() {
             Buyer Dashboards
           </Typography>
           <Box sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid>
-                {!isEmpty(listings) && (
-                  <>
-                    <Typography
-                      sx={{ mt: 4, mb: 2 }}
-                      variant="h6"
-                      component="div"
-                    >
-                      Product Listings
-                    </Typography>
-                    <List dense={true}>
-                      {map(listings, (listing) => {
-                        return (
-                          <>
-                            <ListItem
-                              key={listing._id}
-                              secondaryAction={
-                                <>
-                                  <IconButton
-                                    title="Buy"
-                                    edge="end"
-                                    onClick={() => {
-                                      selectedProductToBuy.current =
-                                        listing._id;
-                                      setIsModalOpen(true);
-                                    }}
-                                  >
-                                    <LocalMallIcon />
-                                  </IconButton>
-                                </>
-                              }
-                            >
-                              <ListItemAvatar>
-                                <Avatar>
-                                  <Category />
-                                </Avatar>
-                              </ListItemAvatar>
-                              <ListItemText
-                                primary={listing.title}
-                                secondary={`${capitalize(
-                                  listing.category
-                                )} | CA$${listing.price}`}
-                              />
-                            </ListItem>
-                          </>
-                        );
-                      })}
-                    </List>
-                  </>
-                )}
-                {!isEmpty(purchases) && (
-                  <>
-                    <Typography
-                      sx={{ mt: 4, mb: 2 }}
-                      variant="h6"
-                      component="div"
-                    >
-                      Your Purchases
-                    </Typography>
-                    <List dense={true}>
-                      {map(purchases, (purchase) => {
-                        return (
-                          <>
-                            <ListItem key={purchase._id}>
-                              <ListItemAvatar>
-                                <Avatar>
-                                  <Category />
-                                </Avatar>
-                              </ListItemAvatar>
-                              <ListItemText
-                                primary={purchase.title}
-                                secondary={`${capitalize(
-                                  purchase.category
-                                )} | CA$${purchase.price}`}
-                              />
-                            </ListItem>
-                          </>
-                        );
-                      })}
-                    </List>
-                  </>
-                )}
-              </Grid>
+            <Grid
+              style={{ alignItems: "center", flexDirection: "column" }}
+              container
+              spacing={2}
+            >
+              {!isEmpty(listings) && (
+                <>
+                  <Typography
+                    sx={{ mt: 4, mb: 2 }}
+                    variant="h6"
+                    component="div"
+                  >
+                    Product Listings
+                  </Typography>
+                  <List dense={true}>
+                    {map(listings, (listing) => {
+                      return (
+                        <>
+                          <ListItem
+                            key={listing._id}
+                            secondaryAction={
+                              <>
+                                <IconButton
+                                  title="Buy"
+                                  edge="end"
+                                  onClick={() => {
+                                    selectedProductToBuy.current = listing._id;
+                                    setIsModalOpen(true);
+                                  }}
+                                >
+                                  <LocalMallIcon />
+                                </IconButton>
+                              </>
+                            }
+                          >
+                            <ListItemAvatar>
+                              <Avatar {...stringAvatar(listing.title)} />
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={listing.title}
+                              secondary={`${capitalize(
+                                listing.category
+                              )} | CA$${listing.price}`}
+                            />
+                          </ListItem>
+                        </>
+                      );
+                    })}
+                  </List>
+                </>
+              )}
+              {!isEmpty(purchases) && (
+                <>
+                  <Typography
+                    sx={{ mt: 4, mb: 2 }}
+                    variant="h6"
+                    component="div"
+                  >
+                    Your Purchases
+                  </Typography>
+                  <List dense={true}>
+                    {map(purchases, (purchase) => {
+                      return (
+                        <>
+                          <ListItem key={purchase._id}>
+                            <ListItemAvatar>
+                              <Avatar {...stringAvatar(purchase.title)} />
+                            </ListItemAvatar>
+                            <ListItemText
+                              primary={purchase.title}
+                              secondary={`${capitalize(
+                                purchase.category
+                              )} | CA$${purchase.price}`}
+                            />
+                          </ListItem>
+                        </>
+                      );
+                    })}
+                  </List>
+                </>
+              )}
             </Grid>
           </Box>
         </Box>
